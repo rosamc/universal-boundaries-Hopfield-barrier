@@ -1,0 +1,23 @@
+[rm335@login06 2021_12_13_N6univ]$ more 45947253_57.err
+Traceback (most recent call last):
+  File "boundaries.py", line 119, in <module>
+    BE.extend_boundary(**args)
+  File "/home/rm335/repos/sharedposstpNov19/GeneRegulatoryFunctions/utilsGRF/BoundaryFinder.py", line 1208, in extend_b
+oundary
+    np.save(matparsname,self.mat_pars)
+  File "<__array_function__ internals>", line 6, in save
+  File "/home/rm335/myenvpy36/lib/python3.6/site-packages/numpy/lib/npyio.py", line 553, in save
+    pickle_kwargs=pickle_kwargs)
+  File "/home/rm335/myenvpy36/lib/python3.6/site-packages/numpy/lib/format.py", line 687, in write_array
+    array.tofile(fp)
+OSError: 2599254 requested and 1938416 written
+[rm335@login06 2021_12_13_N6univ]$ more 45947253_12.err
+slurmstepd: error: *** JOB 45947266 ON compute-a-16-168 CANCELLED AT 2022-01-12T08:15:13 DUE TO TIME LIMIT ***
+[rm335@login06 2021_12_13_N6univ]$ more 45947253_32.err
+slurmstepd: error: *** JOB 45947289 ON compute-a-16-167 CANCELLED AT 2022-01-12T08:16:13 DUE TO TIME LIMIT ***
+[rm335@login06 2021_12_13_N6univ]$ more 45947253_52.err
+slurmstepd: error: *** JOB 45947309 ON compute-a-16-167 CANCELLED AT 2022-01-12T08:16:13 DUE TO TIME LIMIT ***
+[rm335@login06 2021_12_13_N6univ]$ more 45947253_72.err
+slurmstepd: error: *** JOB 45947331 ON compute-a-16-132 CANCELLED AT 2022-01-12T08:17:17 DUE TO TIME LIMIT ***
+[rm335@login06 2021_12_13_N6univ]$ 
+

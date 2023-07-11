@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "boundaries.py", line 117, in <module>
+    BE.extend_boundary(**args)
+  File "/home/rm335/repos/sharedposstpNov19/GeneRegulatoryFunctions/utilsGRF/BoundaryFinder.py", line 1208, in extend_boundary
+    np.save(matparsname,self.mat_pars)
+  File "<__array_function__ internals>", line 6, in save
+  File "/home/rm335/myenvpy36/lib/python3.6/site-packages/numpy/lib/npyio.py", line 553, in save
+    pickle_kwargs=pickle_kwargs)
+  File "/home/rm335/myenvpy36/lib/python3.6/site-packages/numpy/lib/format.py", line 687, in write_array
+    array.tofile(fp)
+OSError: 2784915 requested and 2217968 written
