@@ -1,0 +1,1 @@
+{"time": "Sat Apr  9 16:42:40 2022", "niters": 100, "niters_conv": 10, "niters_conv_points": 1000, "niters_save": 3, "folder_save": "N4univnoconstraints_out", "name_save": "N4univnoconstraints", "prob_par": 0.5, "prob_replace": 0.2, "extr_uniform": [-2, 2], "L_project": 15, "plotting": false, "verbose": true, "dofirstmutate": true, "dopullcentroids": true, "dopulltangents": true}
