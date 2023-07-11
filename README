@@ -1,0 +1,89 @@
+Rosa Martinez-Corral
+August 24th 2022, updated July 11th 2023
+Contact: rosa_martinezcorral@hms.harvard.edu; rosamcorral@hotmail.com; rosa.martinez@crg.eu
+
+This repository contains the necessary code to reproduce the analysis and replot the figures for the paper on the universality of the Hill function as the universal Hopfield barrier for sharpness.
+
+Once the paper is published this file will be updated with the corresponding reference.
+
+--------------------------------
+Dependencies:
+--------------------------------
+
+a) polynomials repository, which contains the code to find polynomial roots with high accuracy: https://github.com/kmnam/polynomials.git (commit af5a8318a6d637680033858a9b902c6d02eff613). Created and maintained by Kee-Myoung (Chris) Nam.
+
+b) GeneRegulatoryFunctions repository: https://github.com/rosamc/GeneRegulatoryFunctions.git (Created and maintained by Rosa Martinez-Corral)
+Contains general code necessary for calculating position-steepness of input-output curves from various models, as well as the code to run the exploration of the boundaries in position-steepness space. (Commit bdc925406b59f266ae0918932403834289183db9 works well although some analyses were initially done with earlier commits.)
+
+
+--------------------------------
+Repository organisation:
+--------------------------------
+
+- main_notebooks: main notebooks, to write the C++ code and to make the figures in the paper.
+- aux_notebooks: notebooks used to do some preliminary analysis before the notebooks in main_notebooks for the figures can be used.
+Here there are also some notebooks not directly used for the figures but to do some calculations helpful to get some of the insight in the paper.
+- boundaryanalysis_notebooks: notebooks to analyse the results of the boundary explorations done in the cluster.
+- clustersearch: code to run the calculations that were run in the cluster.
+- bin: C++ and Mathematica code to calculate position-steepness.
+ 
+Note that the notebooks were previously in another folder. Some have been rerun here but others not, in which case the paths will need to be adjusted appropriately.
+
+(The results obtained from the cluster calculations are not included in order to minimize the size of the repository).
+
+--------------------------------
+General overview of the code to explore position-steepness for various models:
+--------------------------------
+
+1) Position-steepness calculations.
+
+Position-steepness calculations are run in C++ code using high precision numbers in order to maximise accuracy. This C++ code is called from Python. This is possible thanks to pybind11. 
+
+Equilibrium models:
+
+In order to ease the writing of the C++ code for each equilibrium model, a Python script (writescripts.py, found in GeneRegulatoryFunctions repository) is used to write the C++ code for that model. The model-specific .cpp file that is written defines a child of the class GRFCalculations. This allows to specify the function to fill the numerator and denominator of the GRF for that specific model, as well as the function to fill the \rho_i for each state of the model. 
+
+The class GRFCalculations is defined in GRFCalculations.hpp, found in GeneRegulatoryFunctions repository. 
+In addition, it requires some auxiliary functions found in posstpfunc_cpp_boost_multiprT.hpp.
+The header file commonincludes.hpp is also needed.
+
+The code used to call the writing script and compile the C++ code locally can be found in main_notebooks/Write&CompileCode.ipynb (compilation in the cluster is done adapting the paths appropriately, using the same .cpp files written from this notebook). In some cases, manual edits are needed, as indicated in the notebook. 
+
+Non-equilibrium models:
+
+If the model is very small and the GRF can be written in terms of the spanning trees of the graph, then the code in writescripts.py could also be used in this case. However, for the nonequilibrium model for a ligand that binds to 4 sites, considering fractional saturation, this becomes unfeasible. Therefore, we approximate the position-steepness value from the input-output curve. For this, we calculate the steady-state at each input value using SVD. The code to do this calculation again runs in C++ and is called from Python. This code (N4av_noneq) is prepared semi-automatically. The laplacian and parameter set is obtained programmatically, in notebook codehypercubeN4noneq_printparsandL_compile.ipynb. This is then copy-pasted into a .cpp file that is prepared manually and which contains the call to the SVD routine. 
+
+
+
+2) Boundary explorations
+
+The exploration of the boundaries for each model is done using the code in BoundaryFinder.py. The analysis is done using the functionality in AnalyseBoundarysearch.py (both in GeneRegulatoryFunctions repository).
+ 
+
+--------------------------------
+Steps to reproduce the analyses and replete the figures:
+--------------------------------
+
+1) Compile the code to calculate position-steepness for the various models, using Write&CompileCode.ipynb. Compile also the nonequilibrium code, with the help of the code in codehypercubeN4noneq_printparsandL_compile.ipynb.
+
+2) Run boundary explorations in the cluster. Note that this can take from a few days to a few weeks depending on which boundary, mostly because the convergence is set to many iterations. Probably the same results can be obtained with much less iterations required for convergence, but the larger the number of iterations, the highest the confidence in the boundary convergence. 
+
+The code used to run each boundary is in folder clustersearch.
+
+Analyse results, using the notebooks in boundaryanalysis_notebooks. Save corresponding boundaries. 
+
+The final boundaries resulting from each run and analysis are found in boundaryanalysis_notebooks/ashapes.
+
+For the boundary corresponding to the N4 universal model, stitch together the middle, upper left and lower right region with aux_notebooks/Fig5_stitch_allN4univregion_together.ipynb.
+
+3) Run additional calculations for Figure 5B (position-steepness points when lifting the constraints that the numerator coefficients must be at most the values of the corresponding denominator coefficients) and Figure 5C (Nonequilibrium model).
+
+Follow notebooks Fig5_noconstraints* and Fig5_C* in aux_notebooks. The corresponding relevant outputs needed for the final figures are also in aux_notebooks.
+
+
+4) Plot the figures using the code in main_notebooks.
+
+
+
+
+
