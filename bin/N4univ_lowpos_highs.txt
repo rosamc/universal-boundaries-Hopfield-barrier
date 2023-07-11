@@ -1,0 +1,52 @@
+In[210]:=
+absder="True";
+num[an_,ad_,bn_,bd_,cn_,cd_,dn_,dd_,en_,ed_,x_]:=an+bn*x+cn*x^2+dn*x^3+en*x^4;
+den[an_,ad_,bn_,bd_,cn_,cd_,dn_,dd_,en_,ed_,x_]:=ad+bd*x+cd*x^2+dd*x^3+ed*x^4;
+GRF[an_,ad_,bn_,bd_,cn_,cd_,dn_,dd_,en_,ed_,x_]:=num[an,ad,bn,bd,cn,cd,dn,dd,en,ed,x]/den[an,ad,bn,bd,cn,cd,dn,dd,en,ed,x];
+{ad,an,bd,bn,cd,cn,dd,dn,ed,en}=Table[0,{i,1,10}];
+
+Print["Defined GRF"];
+logspace[a_, b_, n_] := 10.0^Range[a, b, (b - a)/(n - 1)];
+ar = logspace[-60, 60, 6000];
+PLIST={4.79559, 0.001, 0.001252, 0.001, 0.001, 0.001, 7.22571, 0.001, 0.001406, 0.001406};
+PLIST={14.97540, 0.007437, 0.001, 0.001, 0.001, 0.001, 10.44330, 0.001, 0.001, 0.001};
+{ad,an,bd,bn,cd,cn,dd,dn,ed,en}=PLIST[[1;;Length[PLIST]]];
+f[x_]:=GRF[an,ad,bn,bd,cn,cd,dn,dd,en,ed,x];
+min=Min[f[ar]];
+max=Max[f[ar]];
+midpoint=min+0.5*(max-min);
+halfX = Solve[f[x]==midpoint&&x>0,x];
+
+g[yv2]:=f[halfX[[1]][[1]][[2]]*yv2];
+maxY = Solve[D[g[yv2],{yv2,2}]==0&&yv2>0,yv2];
+maxY=Append[maxY,{yv2->0}];
+If [absder=="True", maxD = Abs[D[g[yv2],yv2]/.maxY], maxD = D[g[yv2],yv2]/.maxY];
+rho =Max[maxD]; (* TAKE MAX GLOBAL DERIVATIVE *)
+If [absder=="True", checkrho=Abs[D[g[yv2], yv2] /. {yv2 -> 0}], checkrho=D[g[yv2], yv2] /. {yv2 -> 0}];
+If [rho == checkrho, 
+WriteString["stdout","discarding GRF with max D at 0\n"];
+WriteString["stdout",StringRiffle[PLIST,","],"\n"];,
+pos = maxY[[Position[maxD,Max[maxD]][[1]][[1]]]][[1]][[2]];(* TAKE POS CORRESPONDING TO MAX GLOBAL DERIVATIVE *)
+{pos,rho, halfX}
+]
+Plot[g[yv2] /. {yv2 -> y0}, {y0, 0, 10}]
+
+       
+During evaluation of In[210]:= Defined GRF
+During evaluation of In[210]:= Solve::ratnz: Solve was unable to solve the system with inexact coefficients. The answer was obtained by solving a corresponding exact system and numericizing the result.
+During evaluation of In[210]:= Solve::ratnz: Solve was unable to solve the system with inexact coefficients. The answer was obtained by solving a corresponding exact system and numericizing the result.
+Out[234]= {0.0000891598,1.71218,{{x->10449.2}}}
+Out[235]= 
+In[204]:= maxY
+Out[204]= {{yv2->7.69129*10^-6},{yv2->0.0000891598},{yv2->0.0021059},{yv2->0}}
+In[205]:= maxD=Abs[D[g[yv2],yv2]/.maxY]
+Out[205]= {0.75328,1.71218,0.994208,0.697412}
+In[206]:= rho=Max[maxD];
+rho
+Out[207]= 1.71218
+In[208]:= halfX
+Out[208]= {{x->10449.2}}
+In[209]:= pos
+Out[209]= pos
+In[173]:= halfX
+Out[173]= {{x->5139.92}}

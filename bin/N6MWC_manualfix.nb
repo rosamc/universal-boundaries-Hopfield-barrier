@@ -1,0 +1,32 @@
+In[407]:=
+absder="False";
+GRF[K1_,K2_,L_,x_]:=(L*K2*x*(K2*x+1)^5+K1*x*(K1*x+1)^5)/(L*(K2*x+1)^6+(K1*x+1)^6);
+Print["Defined GRF"];
+logspace[a_, b_, n_] := 10.0^Range[a, b, (b - a)/(n - 1)];
+ar = logspace[-60, 60, 6000];
+PLIST={8.2105800,35.5536000,0.0090330};
+{K1,K2,L}=PLIST[[1;;Length[PLIST]]];
+f[x_]:=GRF[K1,K2,w12,x];
+halfX = Solve[f[x]==1/2&&x>0,x];
+
+g[yv2]:=f[halfX[[1]][[1]][[2]]*yv2];
+maxY = Solve[D[g[yv2],{yv2,2}]==0&&yv2>0,yv2];
+maxY=Append[maxY,{yv2->0}];
+If [absder=="True", maxD = Abs[D[g[yv2],yv2]/.maxY], maxD = D[g[yv2],yv2]/.maxY];
+rho =Max[maxD]; (* TAKE MAX GLOBAL DERIVATIVE *)
+If [absder=="True", checkrho=Abs[D[g[yv2], yv2] /. {yv2 -> 0}], checkrho=D[g[yv2], yv2] /. {yv2 -> 0}];
+If [rho == checkrho, 
+WriteString["stdout","discarding GRF with max D at 0\n"];
+WriteString["stdout",StringRiffle[PLIST,","],"\n"];,
+
+pos = maxY[[Position[maxD,Max[maxD]][[1]][[1]]]][[1]][[2]];(* TAKE POS CORRESPONDING TO MAX GLOBAL DERIVATIVE *)
+{pos,rho}
+]
+Plot[g[yv2] /. {yv2 -> y0}, {y0, 0, 2}]
+
+        
+During evaluation of In[407]:= Defined GRF
+During evaluation of In[407]:= Solve::ratnz: Solve was unable to solve the system with inexact coefficients. The answer was obtained by solving a corresponding exact system and numericizing the result.
+During evaluation of In[407]:= Solve::ratnz: Solve was unable to solve the system with inexact coefficients. The answer was obtained by solving a corresponding exact system and numericizing the result.
+Out[423]= {0.490468,0.532695}
+Out[424]= 
