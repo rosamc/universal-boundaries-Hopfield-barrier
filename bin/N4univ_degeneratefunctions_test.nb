@@ -1,0 +1,50 @@
+In[1379]:=
+absder="True";
+num[an_,ad_,bn_,bd_,cn_,cd_,dn_,dd_,en_,ed_,x_]:=an+bn*x+cn*x^2+dn*x^3+en*x^4;
+den[an_,ad_,bn_,bd_,cn_,cd_,dn_,dd_,en_,ed_,x_]:=ad+bd*x+cd*x^2+dd*x^3+ed*x^4;
+GRF[an_,ad_,bn_,bd_,cn_,cd_,dn_,dd_,en_,ed_,x_]:=num[an,ad,bn,bd,cn,cd,dn,dd,en,ed,x]/den[an,ad,bn,bd,cn,cd,dn,dd,en,ed,x];
+{ad,an,bd,bn,cd,cn,dd,dn,ed,en}=Table[0,{i,1,10}];
+
+Print["Defined GRF"];
+logspace[a_, b_, n_] := 10.0^Range[a, b, (b - a)/(n - 1)];
+ar = logspace[-60, 60, 6000];
+PLIST={538.808,0.00153834,0.00142145,0.00142145,0.00125927,0.001,329.832,0.001,0.001,0.001}; (*low pos, high stp*)
+PLIST={188.043,0.001,0.00195286,0.001,0.475438,0.0027157,6.44893,0.0099085,1000.0,0.00139061}; (*high pos, low stp*)
+
+{ad,an,bd,bn,cd,cn,dd,dn,ed,en}=PLIST[[1;;Length[PLIST]]];
+f[x_]:=GRF[an,ad,bn,bd,cn,cd,dn,dd,en,ed,x];
+min=Min[f[ar]];
+max=Max[f[ar]];
+midpoint=min+0.5*(max-min);
+halfX = Solve[f[x]==midpoint&&x>0,x];
+
+g[yv2]:=f[halfX[[1]][[1]][[2]]*yv2];
+maxY = Solve[D[g[yv2],{yv2,2}]==0&&yv2>0,yv2];
+maxY=Append[maxY,{yv2->0}];
+If [absder=="True", maxD = Abs[D[g[yv2],yv2]/.maxY], maxD = D[g[yv2],yv2]/.maxY];
+rho =Max[maxD]; (* TAKE MAX GLOBAL DERIVATIVE *)
+If [absder=="True", checkrho=Abs[D[g[yv2], yv2] /. {yv2 -> 0}], checkrho=D[g[yv2], yv2] /. {yv2 -> 0}];
+If [rho == checkrho, 
+WriteString["stdout","discarding GRF with max D at 0\n"];
+WriteString["stdout",StringRiffle[PLIST,","],"\n"];,
+pos = maxY[[Position[maxD,Max[maxD]][[1]][[1]]]][[1]][[2]];(* TAKE POS CORRESPONDING TO MAX GLOBAL DERIVATIVE *)
+{pos,rho, halfX}
+]
+(*For the low pos- high stp
+Plot[g[yv2] /. {yv2 -> y0}, {y0, 0, 10}, PlotRange->{{0,10},{0,1}}]
+LogLinearPlot[g[yv2] /. {yv2 -> y0}, {y0, 0, 10}, PlotRange->{{0,10},{0,1}}]
+LogLinearPlot[D[g[yv2], yv2] /. {yv2 -> y0}, {y0, 0.0000000001, 10}, PlotRange->{{0.0000000001,10},{0,1.75}}]*)
+(*For high pos, low stp*)
+Plot[g[yv2] /. {yv2 -> y0}, {y0, 0, 100}, PlotRange->{{0,100},{0,0.00003}}]
+LogLinearPlot[g[yv2] /. {yv2 -> y0}, {y0, 0, 100}, PlotRange->{{0,100},{0,0.00003}}]
+LogLinearPlot[D[g[yv2], yv2] /. {yv2 -> y0}, {y0, 0., 100}, PlotRange->{{0,100},{-0.000003,0.00003}}]
+
+       
+
+During evaluation of In[1379]:= Defined GRF
+During evaluation of In[1379]:= Solve::ratnz: Solve was unable to solve the system with inexact coefficients. The answer was obtained by solving a corresponding exact system and numericizing the result.
+During evaluation of In[1379]:= Solve::ratnz: Solve was unable to solve the system with inexact coefficients. The answer was obtained by solving a corresponding exact system and numericizing the result.
+Out[1404]= {1.42502,6.56712*10^-6,{{x->0.266014},{x->1.64018}}}
+Out[1407]= 
+Out[1408]= 
+Out[1409]= 
